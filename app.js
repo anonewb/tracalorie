@@ -22,6 +22,27 @@ ez
 6. UICtrl-
       inside return{}- any mainpulation related to UI of app, must be done here.
       NOTE: first apply changes in data structure (ItemCtrl), then apply changes to UI
+
+
+7. At the end, to persist the changes in browser, we are using LS:
+  StorageCtrl-
+      4 things to be done(storing,getting,updating,deleting) in general
+      [CRUD functions/operations]
+      a. inside App Ctrl- 
+            See where the items are being: added,updated or deleted
+            and immediately after above operation declare the new LS function for that operation and define them in StorageCtrl
+
+      b. inside return{}- create/define fn for all the above
+          storing/adding: check if items already present and getItem() from LS if any and push() into array
+          getting(displaying in UI): getItem() from LS
+          updating: splice() and setItem() in LS
+          deleting: same as update just dont replace, just delete it
+          clearing(reset): just call .removeItems() from LS
+
+
+
+***Names of vars/fn/obj must be clearly discriptive!! 
+
 */    
 
 
@@ -50,7 +71,7 @@ const StorageCtrl = (function() {
         localStorage.setItem('items', JSON.stringify(items));
       }
     },
-    getItemsFromStorage: function() {
+    getItemsFromStorage: function() { //***observe the names of the fn which clearly specifies 'get the items from storage'
 
       let items;
       // check if any items in LS
@@ -60,6 +81,29 @@ const StorageCtrl = (function() {
         items = JSON.parse(localStorage.getItem('items'));  
       }
       return items;
+    },
+    updateItemStorage: function(updatedItem) {
+      let items = JSON.parse(localStorage.getItem('items'));
+
+      items.forEach(function(item, index) {
+        if (updatedItem.id === item.id) {
+          items.splice(index, 1, updatedItem);
+        }
+      });
+      localStorage.setItem('items', JSON.stringify(items));
+    },
+    deleteItemFromStorage: function(id) {
+      let items = JSON.parse(localStorage.getItem('items'));
+
+      items.forEach(function(item, index) {
+        if (id === item.id) {
+          items.splice(index, 1);
+        }
+      });
+      localStorage.setItem('items', JSON.stringify(items));
+    },
+    clearItemsFromStorage: function() {
+      localStorage.removeItem('items')
     }
   }
 })();
@@ -441,6 +485,9 @@ const App = (function(ItemCtrl,StorageCtrl, UICtrl) {
     // add total calories to UI
     UICtrl.showTotalCalories(totalCalories);
 
+    // Update LS
+    StorageCtrl.updateItemStorage(updatedItem);
+
     UICtrl.clearEditState();
 
     e.preventDefault();
@@ -464,6 +511,9 @@ const App = (function(ItemCtrl,StorageCtrl, UICtrl) {
     // add total calories to UI
     UICtrl.showTotalCalories(totalCalories);
 
+    // Delete from LS
+    StorageCtrl.deleteItemFromStorage(currentItem.id); //***observe the names of the fn which clearly specifies 'get the items from storage'
+
     UICtrl.clearEditState();
 
     e.preventDefault();
@@ -481,6 +531,9 @@ const App = (function(ItemCtrl,StorageCtrl, UICtrl) {
 
     // remove from UI
     UICtrl.removeItems();
+
+    // clear from LS
+    StorageCtrl.clearItemsFromStorage();
 
     // hide the ul
     UICtrl.hideList();
