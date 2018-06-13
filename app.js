@@ -1,6 +1,30 @@
 // contains modules, controller modules, LS
 
 
+/* Steps: eg: after 'clear all' btn is clicked, everything must reset
+MUST READ!!!
+ez
+
+0. App.init(); last line of code will initiate our whole app
+          ie will call the event listeners and then eventListeners will call fn...
+1. App controller- App.init();
+      inside EventListener{}- add event listener for 'clear all' btn.
+2. UI controller-
+      inside UISelectors{}- create var for the id/class of that 'clear all' btn
+3. App controller-
+      inside EventListener- after selecting that 'clear all' btn, for manipulation create a function for it.
+        this function can be declared either in App ctrl OR UICtrl
+4. App controller-
+      create its own function and define it here and for manipulation of list items(for this application), create methods in ItemCtrl OR UICtrl which should be defined inside 'return {}' ie then must be public methods so that it can be accessed from outside that controller
+5. ItemCtrl-
+      inside return{}- any mainpulation related to data structure of app not the UI, must be done here
+      *NOTE: first apply changes in data structure (ItemCtrl), then apply changes to UI
+6. UICtrl-
+      inside return{}- any mainpulation related to UI of app, must be done here.
+      NOTE: first apply changes in data structure (ItemCtrl), then apply changes to UI
+*/    
+
+
 // Storage controller
 
 
@@ -81,6 +105,22 @@ const ItemCtrl = (function() {
       });
       return found;
     },
+    deleteItem: function(id) {
+      //*** map is similar to forEach except it returns something
+      // get IDs
+      const ids = data.items.map(function(item) {
+        return item.id;
+      });
+
+      // get index
+      const index = ids.indexOf(id);
+
+      // remove item
+      data.items.splice(index, 1);
+    },
+    clearAllItems: function() {
+      data.items = [];
+    },
     setCurrentItem: function(item) {
       data.currentItem = item;
     },
@@ -120,6 +160,7 @@ const UICtrl = (function() {
     updateBtn: '.update-btn',
     deleteBtn: '.delete-btn',
     backBtn: '.back-btn',
+    clearBtn: '.clear-btn',
     itemNameInput: '#item-name',
     itemCaloriesInput: '#item-calories',
     totalCalories: '.total-calories'
@@ -188,6 +229,11 @@ const UICtrl = (function() {
         }
       });
     },
+    deleteListItem: function(id) {
+      const itemID = `#item-${id}`;
+      const item = document.querySelector(itemID);
+      item.remove();
+    },
     clearInput: function() {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
@@ -196,6 +242,16 @@ const UICtrl = (function() {
       document.querySelector(UISelectors.itemNameInput).value = ItemCtrl.getCurrentItem().name;
       document.querySelector(UISelectors.itemCaloriesInput).value = ItemCtrl.getCurrentItem().calories;
       UICtrl.showEditState();
+    },
+    removeItems: function() {
+      let listItems = document.querySelectorAll(UISelectors.listItems);
+
+      // turn nodeList into Array
+      listItems = Array.from(listItems);
+
+      listItems.forEach(function(item){
+        item.remove();
+      });
     },
     hideList: function() {
       document.querySelector(UISelectors.itemList).style.display = 'none';
@@ -256,6 +312,16 @@ const App = (function(ItemCtrl, UICtrl) {
 
     // update item event
     document.querySelector(UISelectors.updateBtn).addEventListener('click', itemUpdateSubmit);
+
+    // delete item event
+    document.querySelector(UISelectors.deleteBtn).addEventListener('click', itemDeleteSubmit);
+
+    // back btn event
+    document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
+
+    // clear items event
+    document.querySelector(UISelectors.clearBtn).addEventListener('click', clearAllItemsClick);
+  
   }
 
   // add item submit
@@ -338,6 +404,46 @@ const App = (function(ItemCtrl, UICtrl) {
     UICtrl.clearEditState();
 
     e.preventDefault();
+  }
+
+  // delete btn event
+  const itemDeleteSubmit = function(e) {
+    // console.log('delete btn clicked');
+
+    // get current item
+    const currentItem = ItemCtrl.getCurrentItem();
+
+    // del from data structure
+    ItemCtrl.deleteItem(currentItem.id);
+
+    // delete from UI
+    UICtrl.deleteListItem(currentItem.id);
+
+    // get the total calories
+    const totalCalories = ItemCtrl.getTotalCalories();
+    // add total calories to UI
+    UICtrl.showTotalCalories(totalCalories);
+
+    UICtrl.clearEditState();
+
+    e.preventDefault();
+  }
+
+  // clear items event
+  const clearAllItemsClick = function(){
+    // del all items from data structure
+    ItemCtrl.clearAllItems();
+
+    // get the total calories
+    const totalCalories = ItemCtrl.getTotalCalories();
+    // add total calories to UI
+    UICtrl.showTotalCalories(totalCalories);
+
+    // remove from UI
+    UICtrl.removeItems();
+
+    // hide the ul
+    UICtrl.hideList();
   }
 
   // public methods
