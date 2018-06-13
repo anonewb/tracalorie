@@ -56,6 +56,22 @@ const ItemCtrl = (function() {
 
       return newItem;
     },
+    getItemsById: function(id) {
+      let found = null;
+      // loop through items and match the IDs
+      data.items.forEach(function(item){
+        if (item.id === id) {
+          found = item;
+        }
+      });
+      return found;
+    },
+    setCurrentItem: function(item) {
+      data.currentItem = item;
+    },
+    getCurrentItem: function() {
+      return data.currentItem;
+    },
     getTotalCalories: function() {
       let total = 0;
 
@@ -85,6 +101,9 @@ const UICtrl = (function() {
   const UISelectors = {
     itemList: '#item-list',
     addBtn: '.add-btn',
+    updateBtn: '.update-btn',
+    deleteBtn: '.delete-btn',
+    backBtn: '.back-btn',
     itemNameInput: '#item-name',
     itemCaloriesInput: '#item-calories',
     totalCalories: '.total-calories'
@@ -138,11 +157,35 @@ const UICtrl = (function() {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
     },
+    addItemToForm: function() {
+      document.querySelector(UISelectors.itemNameInput).value = ItemCtrl.getCurrentItem().name;
+      document.querySelector(UISelectors.itemCaloriesInput).value = ItemCtrl.getCurrentItem().calories;
+      UICtrl.showEditState();
+    },
     hideList: function() {
       document.querySelector(UISelectors.itemList).style.display = 'none';
     },
     showTotalCalories: function(totalCalories){
       document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
+    },
+    // state pattern
+    clearEditState: function() {
+      // clear the input
+      UICtrl.clearInput();
+      document.querySelector(UISelectors.updateBtn).style.display = 'none';
+      document.querySelector(UISelectors.deleteBtn).style.display = 'none';
+      document.querySelector(UISelectors.backBtn).style.display = 'none';
+      document.querySelector(UISelectors.addBtn).style.display = 'inline';
+
+    },
+    showEditState: function() {
+      // show the input
+      UICtrl.clearInput();
+      document.querySelector(UISelectors.updateBtn).style.display = 'inline';
+      document.querySelector(UISelectors.deleteBtn).style.display = 'inline';
+      document.querySelector(UISelectors.backBtn).style.display = 'inline';
+      document.querySelector(UISelectors.addBtn).style.display = 'none';
+
     },
     getSelectors: function() {
       return UISelectors;
@@ -163,6 +206,11 @@ const App = (function(ItemCtrl, UICtrl) {
 
     // add item event
     document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+
+    // edit icon click event
+    //***Event Delegation*** is to be applied as edit btn is dynamically added
+      // here we have to get some parent element and then do a check inside to make sure that its the edit btn which we want
+    document.querySelector(UISelectors.itemList).addEventListener('click', itemUpdateSubmit);
   }
 
   // add item submit
@@ -193,10 +241,44 @@ const App = (function(ItemCtrl, UICtrl) {
     e.preventDefault();
   }
 
+  // Update item submit
+  const itemUpdateSubmit = function(e) {
+    // console.log('click will work on entire list item');
+    if (e.target.classList.contains('edit-item')) {
+      // console.log('click will only work on edit icon');
+
+      // get list item id (item-0, item-1,..)
+      const listId = e.target.parentNode.parentNode.id;
+      // console.log(listId);
+
+      // break into an array
+      const listIdArr = listId.split('-');
+      // console.log(listIdArr);
+
+      // get the actual id
+      const id = parseInt(listIdArr[1]);
+
+      // get item
+      const itemToEdit = ItemCtrl.getItemsById(id);
+      // console.log(itemToEdit);
+
+      // set current item
+      ItemCtrl.setCurrentItem(itemToEdit);
+
+      // add item to form
+      UICtrl.addItemToForm();
+    }
+
+    e.preventDefault();
+  }
+
   // public methods
   return {
     init: function() {
       // console.log('Initializing App...');
+
+      // clear edit state / set initial state
+      UICtrl.clearEditState();
 
       // fetch items from data structure
       const items = ItemCtrl.getItems();
