@@ -2,7 +2,7 @@ body {
 	background-color: #ccc;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 421px) {
 	.update-btn,
 	.delete-btn {
 		width: 100%;
