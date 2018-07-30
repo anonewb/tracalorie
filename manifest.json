@@ -7,7 +7,7 @@
 	"description": "A simple Calories tracker app.",
 	"orientation": "portrait",
 	"Scope": "/",
-	"start_url": "/",
+	"start_url": ".",
 	"icons": [
 		{
 			"src": "images/icons/icon-72x72.png",
