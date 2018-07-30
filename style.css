@@ -1,0 +1,16 @@
+body {
+	background-color: #ccc;
+}
+
+@media (max-width: 420px) {
+	.update-btn,
+	.delete-btn {
+		width: 100%;
+		margin: 4px 0;
+	}
+
+	.back-btn {
+		width: 50%;
+		margin: 10px 0 -5px 0;
+	}
+}

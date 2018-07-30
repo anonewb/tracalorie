@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Tracalorie | Meal & Calorie Tracker</title>
+  <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
   <!-- Navbar -->
   <nav>
     <div class="nav-wrapper blue">
       <div class="container">
         <a href="#" class="brand-logo center">Tracalorie</a>
-        <ul class="right">
-          <li><a href="#" class="clear-btn btn blue lighten-3">Clear All</a></li>
-        </ul>
       </div>
     </div>
   </nav>
@@ -24,41 +25,54 @@
   <br>
 
   <div class="container">
+
     <!-- Form card -->
     <div class="card">
       <div class="card-content">
         <span class="card-title">Add Meal / Food Item</span>
         <form class="col">
           <div class="row">
-            <div class="input-field col s6">
+            <div class="input-field col s8">
               <input type="text" id="item-name" placeholder="Add Item">
               <label for="item-name">Meal</label>
             </div>
-            <div class="input-field col s6">
+            <div class="input-field col s4">
               <input type="number" id="item-calories" placeholder="Add Calories">
               <label for="item-calories">Calories</label>
             </div>
             <button class="add-btn btn blue darken-3">
               <i class="fa fa-plus"> Add Meal</i>
             </button>
-              <button class="update-btn btn orange">
-                <i class="fa fa-pencil-square-o"> Update Meal</i>
-              </button>
-              <button class="delete-btn btn red">
-                <i class="fa fa-remove"> Delete Meal</i>
-              </button>
+            <button class="update-btn btn green">
+              <i class="fa fa-pencil-square-o"> Update </i>
+            </button>
+            <button class="delete-btn btn red">
+              <i class="fa fa-remove"> Delete</i>
+            </button>
             <button class="back-btn btn grey pull-right">
               <i class="fa fa-chevron-circle-left"> Back</i>
             </button>
           </div>
         </form>
       </div>
+
     </div>
+
+    <!-- clear all btn -->
+    <div class="right-align">
+      <a href="#" class="clear-btn btn blue lighten-3">
+        <i class="fa fa-trash-o" aria-hidden="true"> Clear All</i>
+      </a>
+    </div>
+
+
     <!-- Callorie count -->
-    <h3 class="center-align">Total Calories: <span class="total-calories">0</span></h3>
+    <h3 class="center-align">Total Calories:
+      <span class="total-calories">0</span>
+    </h3>
 
     <!-- Item List -->
-    
+
     <ul id="item-list" class="collection">
       <!-- temporaryly hard coded 
       <li class="collection-item" id="item-0">
@@ -79,7 +93,7 @@
           <i class="edit-item fa fa-pencil"></i>
         </a>
       </li> -->
-    </ul> 
+    </ul>
 
   </div>
 
@@ -87,4 +101,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
