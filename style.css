@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
 body {
 	background-color: #ccc;
+	font-family: 'Montserrat', sans-serif;
 }
 
 @media (max-width: 421px) {
